@@ -227,7 +227,7 @@ public final class Modules {
             if (placed >= cfg.scaffoldPerTick) break;
             if (placeAt(mc, p, target)) placed++;
         }
-        if (placed > 0) p.swing(InteractionHand.MAIN_HAND);
+        if (placed > 0) swingUse(p);
 
         if (switched) p.getInventory().setSelectedSlot(prev);
     }
@@ -260,6 +260,17 @@ public final class Modules {
             return true;
         }
         return false;
+    }
+
+    // ---------------------------------------------------------------- Arm-Schwung (26.3)
+
+    /** 26.3: swing(hand) gibt es nicht mehr; jetzt mit SwingAnimation und Sync-Flag (wie früher swing(hand, false)). */
+    private static void swingAttack(LocalPlayer p) {
+        p.swing(InteractionHand.MAIN_HAND, p.getMainHandItem().getAttackAnimation(), false);
+    }
+
+    private static void swingUse(LocalPlayer p) {
+        p.swing(InteractionHand.MAIN_HAND, p.getMainHandItem().getInteractAnimation(), false);
     }
 
     // ---------------------------------------------------------------- Reach / Auto-Crit
@@ -341,7 +352,7 @@ public final class Modules {
                     mc.gameMode.attack(p, target);
                     return true;
                 });
-                p.swing(InteractionHand.MAIN_HAND);
+                swingAttack(p);
                 return;
             }
         }
@@ -350,7 +361,7 @@ public final class Modules {
         if (trigWeb && trigCd == 0) {
             int web = findSlot(p, s -> s.is(Items.COBWEB));
             if (web >= 0 && withSlot(p, web, () -> placeAt(mc, p, target.blockPosition()))) {
-                p.swing(InteractionHand.MAIN_HAND);
+                swingUse(p);
                 trigCd = 20;
                 return;
             }
@@ -381,7 +392,7 @@ public final class Modules {
             } else {
                 mc.gameMode.attack(p, target);
             }
-            p.swing(InteractionHand.MAIN_HAND);
+            swingAttack(p);
         }
     }
 
@@ -550,7 +561,7 @@ public final class Modules {
         for (int i = 0; i < count; i++) {
             mc.gameMode.attack(p, found.get(i));
         }
-        p.swing(InteractionHand.MAIN_HAND);
+        swingAttack(p);
     }
 
     /** Legt einen Totem aus dem Inventar in die zweite Hand, falls dort keiner liegt. */
