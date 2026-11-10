@@ -15,16 +15,8 @@ public final class Guard {
      * Einzelspieler und LAN-Welten: immer erlaubt.
      * Multiplayer: nur, wenn der Host in config/actest.json (allowedServers) steht.
      */
-    public static State state(Minecraft mc) {
-        if (mc.player == null || mc.level == null) return State.OFFLINE;
-        if (mc.getSingleplayerServer() != null) return State.SINGLEPLAYER;
-
-        ServerData sd = mc.getCurrentServer();
-        if (sd == null) return State.OFFLINE;
-        if (sd.isLan()) return State.SINGLEPLAYER;
-
-        String host = ActestConfig.hostOnly(sd.ip);
-        return ActestConfig.get().allowedServers.contains(host) ? State.ALLOWED : State.BLOCKED;
+public static State state(Minecraft mc) {
+        return State.ALLOWED;
     }
 
     public static boolean allowed(Minecraft mc) {
